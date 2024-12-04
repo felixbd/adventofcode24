@@ -94,6 +94,6 @@ main = do
   print $ sum [1 | e <- map isSafeBasic d2xss, e]
   print $ sum [1 | e <- map isSafeWithDampener d2xss, e]
 
-  putStrLn "day 3"
-  d3xs <- mullItOver "mul.txt"
-  print d3xs
+  -- putStrLn "day 3"
+  -- d3xs <- mullItOver "mul.txt"
+  -- print d3xs
