@@ -1,4 +1,8 @@
-import Data.List (sort, nub, tails)
+-- | aoc 2024
+
+{-# LANGUAGE LambdaCase #-}
+
+import Data.List (sort, nub, tails, stripPrefix, isSuffixOf)
 
 -- day 1 --------------------------------------------------------------------
 
@@ -40,6 +44,44 @@ isSafeWithDampener levels
   where
     removeAt i = take i levels ++ drop (i + 1) levels
 
+
+-- day 3 ------------------------------------------------------------------------
+
+-- v2
+
+getBrackets :: String -> [Int]
+getBrackets xs = concat [[li | ri <- r, li + 1 == ri] | li <- l]
+  where
+    l = [i | (c, i) <- zip xs [1..], c == '(']
+    r = [i | (c, i) <- zip xs [1..], c == ')']
+
+-- check if the bracket is prefixed by a "don't" or "do"
+
+data PrefixType = No | Dont | Do deriving (Show, Eq)
+
+checkBracketPrefix :: String -> [Int] -> [(Int, PrefixType)]
+checkBracketPrefix xs ys = filter (\(u, v) -> v /= No) [(y, f y) | y <- ys]
+  where
+    f j = p $ take 5 (drop (j - 6) xs)
+      where
+        p s = if isSuffixOf "don't" s then Dont else if isSuffixOf "do" s then Do else No
+
+
+findDropRanges :: [(Int, PrefixType)] -> [(Int, Int)]
+findDropRanges = undefined
+
+d3helper :: String -> [(Int, PrefixType)]
+d3helper xs = checkBracketPrefix xs $ getBrackets xs
+
+
+
+mullItOver :: FilePath -> IO [(Int, PrefixType)]
+mullItOver fp = readFile fp >>= \c -> return $ d3helper c
+
+-- stripPrefix
+-- isPrefixOf
+
+
 ---------------------------------------------------------------------------------
 
 main :: IO ()
@@ -51,3 +93,7 @@ main = do
   putStrLn "day 2"
   print $ sum [1 | e <- map isSafeBasic d2xss, e]
   print $ sum [1 | e <- map isSafeWithDampener d2xss, e]
+
+  putStrLn "day 3"
+  d3xs <- mullItOver "mul.txt"
+  print d3xs
